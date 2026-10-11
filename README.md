@@ -57,6 +57,16 @@ vim.cmd.colorscheme(os.getenv("RANMA_THEME") == "kanna" and "kanna" or "sumi")
 `require("sumi").colors("kanna")` (or `"sumi"`) hands a variant's colours to
 anything else.
 
+## Checking a change
+
+```sh
+nvim --headless -u NONE -l scripts/check.lua
+```
+
+loads every colorscheme and lualine theme in a clean Neovim and fails on the
+first error. CI runs it on every push and pull request, against the latest
+Neovim release and nightly.
+
 ## License
 
 MIT, see `LICENSE`.
