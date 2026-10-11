@@ -1,0 +1,1 @@
+require("sumi").load("kanna")

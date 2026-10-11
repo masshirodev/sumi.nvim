@@ -28,26 +28,40 @@ M.config = {
   italic_comments = true,
 }
 
+-- kanna: the same palette cut tight, as ranma's kanna theme. One ink ground
+-- for every window (ranma's active_bg = inactive_bg there), flat bars, the
+-- darker border line, and no cursorline wash: focus is the line number.
+M.variants = {
+  sumi = {},
+  kanna = {
+    bg = "#141317",
+    bg_dim = "#141317",
+    sumi2 = "#1e1c1a",
+    sumi3 = "#2e2b27",
+  },
+}
+
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 end
 
-local function groups(p, c)
+local function groups(p, c, variant)
+  local kanna = variant == "kanna"
   local bg = c.transparent and "NONE" or p.bg
   local bg_nc = c.transparent and "NONE" or (c.dim_inactive and p.bg_dim or p.bg)
   return {
     -- Editor ------------------------------------------------------------------
     Normal = { fg = p.washi, bg = bg },
     NormalNC = { fg = p.washi, bg = bg_nc },
-    NormalFloat = { fg = p.washi, bg = p.ink },
-    FloatBorder = { fg = p.ai, bg = p.ink },
-    FloatTitle = { fg = p.hinoki, bg = p.ink, bold = true },
+    NormalFloat = { fg = p.washi, bg = kanna and "#1b1a1d" or p.ink },
+    FloatBorder = { fg = p.ai, bg = kanna and "#1b1a1d" or p.ink },
+    FloatTitle = { fg = p.hinoki, bg = kanna and "#1b1a1d" or p.ink, bold = true },
     Cursor = { fg = p.ink, bg = p.washi },
-    CursorLine = { bg = "#1e1c1f" },
+    CursorLine = kanna and {} or { bg = "#1e1c1f" },
     CursorColumn = { link = "CursorLine" },
     ColorColumn = { bg = "#1e1c1f" },
     LineNr = { fg = p.ln },
-    CursorLineNr = { fg = p.washi, bold = true },
+    CursorLineNr = { fg = kanna and p.hinoki or p.washi, bold = true },
     SignColumn = { bg = "NONE" },
     FoldColumn = { fg = p.ln },
     Folded = { fg = p.fg_dim, bg = p.sumi2 },
@@ -272,16 +286,23 @@ local function terminal(p)
   for i, col in ipairs(t) do vim.g["terminal_color_" .. (i - 1)] = col end
 end
 
-function M.load()
+-- The palette of a variant: sumi's, with the variant's keys over it.
+function M.colors(variant)
+  return vim.tbl_extend("force", M.palette, M.variants[variant or "sumi"] or {})
+end
+
+function M.load(variant)
+  variant = variant or "sumi"
   if vim.g.colors_name then vim.cmd("highlight clear") end
   if vim.fn.exists("syntax_on") == 1 then vim.cmd("syntax reset") end
   vim.o.termguicolors = true
   vim.o.background = "dark"
-  vim.g.colors_name = "sumi"
-  for name, spec in pairs(groups(M.palette, M.config)) do
+  vim.g.colors_name = variant
+  local p = M.colors(variant)
+  for name, spec in pairs(groups(p, M.config, variant)) do
     vim.api.nvim_set_hl(0, name, spec)
   end
-  terminal(M.palette)
+  terminal(p)
 end
 
 return M
