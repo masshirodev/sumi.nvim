@@ -41,3 +41,7 @@ lualine: `require("lualine").setup { options = { theme = "sumi" } }`.
 | ai `#7b93c9` macros, floats | shu `#e0533d` errors | kasumi `#6e665c` comments |
 
 `require("sumi").palette` hands the colours to anything else.
+
+## License
+
+MIT, see `LICENSE`.
