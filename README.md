@@ -1,5 +1,7 @@
 # sumi.nvim
 
+![sumi.nvim in ranma, editing ranma's build.rs](assets/screenshot.png)
+
 Ink, washi paper and hinoki wood: the editor half of ranma's `sumi` theme.
 Same palette, and the same ground as ranma's focused pane (`#17161a`), so
 nvim sits inside a sumi ranma without a seam.
